@@ -22,7 +22,9 @@ def main(args):
     file_writer = tf.summary.create_file_writer(logdir + '/metrics')
     file_writer.set_as_default()
 
-    optimizer = tf.keras.optimizers.Adam(learning_rate=params['lr'])
+    lr_scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=params['lr'],
+                                                                  decay_steps=200, decay_rate=0.96, staircase=True)
+    optimizer = tf.keras.optimizers.Adam(lr_scheduler)
     metrics = tf.keras.metrics.BinaryCrossentropy()
 
     @tf.function
@@ -60,6 +62,7 @@ def main(args):
                 print(f'Train step: {step}')
                 tf.summary.scalar('train/crossentropy', metric, step=step + step_train_offset)
                 tf.summary.scalar('train/dice', loss, step=step + step_train_offset)
+                tf.summary.scalar('learning_rate', optimizer._decayed_lr(tf.float32), step=step + step_train_offset)
 
             step_counter += step
             print(f"Dice train: {loss}")
