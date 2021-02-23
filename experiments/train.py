@@ -47,12 +47,13 @@ def main(args):
 
         return loss, metric
 
+    step_train_offset = 0
+    step_val_offset = 0
+
     for e in range(args.epochs):
         loss_mean = []
         last_loss = 10e6
 
-        step_train_offset = 0
-        step_val_offset = 0
         step_counter = 0
 
         for step, (image, labels) in enumerate(train_ds):
@@ -63,8 +64,8 @@ def main(args):
                 tf.summary.scalar('train/crossentropy', metric, step=step + step_train_offset)
                 tf.summary.scalar('train/dice', loss, step=step + step_train_offset)
                 tf.summary.scalar('learning_rate', optimizer._decayed_lr(tf.float32), step=step + step_train_offset)
+                step_counter += step
 
-            step_counter += step
             print(f"Dice train: {loss}")
 
         step_train_offset += step_counter
@@ -76,9 +77,9 @@ def main(args):
                 print(f'Val step: {step}')
                 tf.summary.scalar('val/crossentropy', metric, step=step + step_val_offset)
                 tf.summary.scalar('val/dice', loss, step=step + step_val_offset)
+                step_val_offset += step
 
             loss_mean.append(loss)
-            step_val_offset += step
             print(f"Dice validation: {loss}")
 
         if last_loss > (mean_loss := tf.reduce_mean(loss_mean)):

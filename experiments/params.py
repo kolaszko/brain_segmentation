@@ -4,6 +4,6 @@ def train_params():
             'z': (192, 256),
             'lr': 5e-4,
             'decay_rate' : 0.96,
-            'decay_steps' : 200
+            'decay_steps' : 100
 
     }
