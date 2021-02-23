@@ -23,7 +23,7 @@ def main(args):
     file_writer.set_as_default()
 
     lr_scheduler = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=params['lr'],
-                                                                  decay_steps=200, decay_rate=0.96, staircase=True)
+                                                                  decay_steps=params['decay_steps'], decay_rate=params['decay_rate'], staircase=True)
     optimizer = tf.keras.optimizers.Adam(lr_scheduler)
     metrics = tf.keras.metrics.BinaryCrossentropy()
 
