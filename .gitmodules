@@ -1,0 +1,3 @@
+[submodule "deep_models"]
+	path = deep_models
+	url = git@github.com:kolaszko/deep_models.git
